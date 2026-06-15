@@ -1,0 +1,133 @@
+/* ============================================================
+   APLICACIONES GRÁFICAS — SIMPSON 3/8
+   Extiende el sistema Obsidian Numerical Lab sin tocar simulador.
+   ============================================================ */
+
+.app-gallery-shell { max-width: 1440px; }
+.app-gallery-hero { margin: 1.3rem 0 1.6rem; }
+.app-gallery-eyebrow {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  margin-bottom: .6rem;
+}
+.app-gallery-title {
+  font-family: var(--font-title);
+  font-size: clamp(2.35rem, 5vw, 4.5rem);
+  letter-spacing: -0.05em;
+  line-height: .98;
+  margin-bottom: .75rem;
+}
+.app-gallery-desc { max-width: 860px; font-size: 1.04rem; color: var(--text-muted); }
+.app-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.app-card {
+  position: relative;
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, rgba(31,33,36,.95), rgba(12,14,16,.96));
+  box-shadow: var(--shadow-card);
+}
+.app-card canvas {
+  width: 100%; height: 180px; display: block; background: #0c0e10;
+  border-bottom: 1px solid var(--border-soft);
+}
+.app-card-body { padding: 1rem; }
+.app-card h2 { color: var(--text-light); font-size: 1.35rem; margin-bottom: .5rem; }
+.app-card p { font-size: .94rem; color: var(--text-muted); min-height: 4.5rem; }
+.app-card-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: .75rem 0 1rem; }
+.app-card-tags span {
+  font-family: var(--font-mono); font-size: .66rem; letter-spacing: .04em; text-transform: uppercase;
+  border: 1px solid rgba(160,141,128,.45); color: var(--text-soft); padding: .25rem .45rem; border-radius: var(--radius-sm);
+}
+
+.viz-shell { max-width: 1440px; }
+.viz-title-block { margin: 1.2rem 0 1.5rem; }
+.viz-eyebrow {
+  display: inline-flex; gap: .5rem; align-items: center;
+  color: var(--primary); font-family: var(--font-mono); font-size: .78rem;
+  letter-spacing: .06em; text-transform: uppercase; margin-bottom: .6rem;
+}
+.viz-title {
+  font-family: var(--font-title);
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  color: var(--text-light); line-height: .98; margin-bottom: .8rem;
+  letter-spacing: -0.05em;
+}
+.viz-description { color: var(--text-muted); max-width: 830px; font-size: 1.08rem; }
+.viz-layout {
+  display: grid; grid-template-columns: minmax(0, 2fr) 420px;
+  gap: 1rem; align-items: start;
+}
+.viz-bottom {
+  display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(280px, .8fr);
+  gap: 1rem; margin-top: 1rem;
+}
+.viz-panel {
+  background: var(--surface); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-card); overflow: hidden;
+}
+.viz-panel-header {
+  display: flex; justify-content: space-between; align-items: center; gap: .75rem;
+  padding: .75rem 1rem; border-bottom: 1px solid var(--border-soft);
+  font-family: var(--font-mono); color: var(--text-muted); font-size: .78rem;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.viz-status { display: inline-flex; align-items: center; gap: .45rem; color: var(--accent); }
+.viz-status::before {
+  content: ""; width: .55rem; height: .55rem; border-radius: 999px; background: currentColor; box-shadow: 0 0 14px currentColor;
+}
+.viz-scene { position: relative; min-height: 540px; background: #0c0e10; }
+.viz-scene canvas { width: 100%; height: 540px; display: block; }
+.viz-metrics {
+  position: absolute; top: 1rem; left: 1rem; display: flex; gap: .75rem; flex-wrap: wrap; z-index: 2;
+}
+.viz-progress {
+  position: absolute; left: 1rem; right: 1rem; bottom: 1rem; height: .5rem;
+  border: 1px solid var(--border-soft); background: rgba(12,14,16,.75);
+  border-radius: 999px; overflow: hidden; z-index: 2;
+}
+.viz-progress > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width .15s linear; }
+.viz-form { padding: 1rem; }
+.viz-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
+.viz-form .input-group { margin-bottom: .85rem; }
+.viz-form input, .viz-form select { width: 100%; padding: .78rem .85rem; }
+.viz-actions { display: grid; grid-template-columns: 1fr auto; gap: .7rem; margin-top: .8rem; }
+.viz-formula {
+  margin: 1rem; padding: .9rem; border: 1px solid rgba(82,68,57,.75);
+  background: rgba(12,14,16,.52); border-radius: var(--radius-sm);
+}
+.viz-formula small {
+  display: block; color: var(--text-soft); font-family: var(--font-mono);
+  letter-spacing: .06em; text-transform: uppercase; margin-bottom: .45rem;
+}
+.viz-katex, .inline-katex { color: var(--math-gold); overflow-x: auto; }
+.viz-chart-wrap { position: relative; padding: 1rem; }
+.viz-chart-wrap canvas { width: 100%; height: 360px; display: block; }
+.viz-results { padding: 1rem; display: grid; gap: .8rem; }
+.viz-dev { margin-top: 1rem; }
+.viz-dev.hidden { display: none; }
+
+.pollution-accent .metric-value, .pollution-accent .result-card span { color: var(--danger); }
+.excavation-accent .metric-value, .excavation-accent .result-card span { color: var(--math-gold); }
+.viz-critical { color: var(--danger) !important; }
+.viz-warning { color: var(--warning) !important; }
+.viz-ok { color: var(--accent) !important; }
+
+@media (max-width: 1100px) {
+  .viz-layout, .viz-bottom, .app-gallery-grid { grid-template-columns: 1fr; }
+  .viz-scene, .viz-scene canvas { min-height: 440px; height: 440px; }
+}
+@media (max-width: 640px) {
+  .viz-form-grid, .viz-actions { grid-template-columns: 1fr; }
+  .viz-title { font-size: 2.3rem; }
+  .app-gallery-title { font-size: 2.35rem; }
+}

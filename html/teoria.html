@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teoría </title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/componentes.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-outline" onclick="navigateTo('../index.html')">← VOLVER</button>
+      <h3 style="color:var(--text-light);">TEORÍA </h3>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="teoria-section">
+      <div class="card">
+        <h2>¿Qué es el Método de Simpson 3/8?</h2>
+        <p>Es un método de integración numérica que aproxima el valor de una integral definida mediante un polinomio interpolante de grado 3 (cúbico).</p>
+        <div id="teoria-integral" class="mt-2"></div>
+        <p class="mt-2">El método de Simpson 3/8 es exacto para polinomios de grado ≤ 3, ya que ajusta perfectamente la curvatura cúbica de la función.</p>
+      </div>
+    </section>
+
+    <section class="teoria-comparativa">
+      <div class="card">
+        <h2>Simpson 3/8 Simple</h2>
+        <p>Usa exactamente <strong>4 puntos</strong>: x₀, x₁, x₂, x₃.</p>
+        <p><strong>n = 3 subintervalos</strong>.</p>
+        <p>Coeficientes Cᵢ: <strong>1, 3, 3, 1</strong>.</p>
+        <div id="teoria-formula-simple" class="mt-2"></div>
+      </div>
+      <div class="card">
+        <h2>Simpson 3/8 Compuesto</h2>
+        <p>Divide el intervalo en <strong>n subintervalos</strong>.</p>
+        <p><strong>n</strong> debe ser múltiplo de 3.</p>
+        <p>Genera <strong>n + 1 puntos</strong>.</p>
+        <p>Los coeficientes Cᵢ siguen el patrón <strong>1, 3, 3, 2, 3, 3, 2, ..., 3, 3, 1</strong>.</p>
+        <div id="teoria-formula-compuesta" class="mt-2"></div>
+      </div>
+    </section>
+
+    <section class="teoria-error-section">
+      <div class="card">
+        <h2>Error del Método</h2>
+        <p>Si se conoce el valor exacto o de referencia de la integral, se pueden calcular los siguientes errores:</p>
+        <div class="grid-2 mt-2">
+          <div>
+            <h4>Error absoluto</h4>
+            <div id="teoria-ea"></div>
+          </div>
+          <div>
+            <h4>Error relativo</h4>
+            <div id="teoria-er"></div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <h4>Error porcentual</h4>
+          <div id="teoria-ep"></div>
+        </div>
+        <p class="note mt-2">Si I<sub>exacta</sub> = 0, el error relativo y porcentual no se pueden calcular. Se muestra solo el error absoluto.</p>
+      </div>
+    </section>
+
+    <section class="teoria-cta">
+      <button class="btn btn-accent btn-lg" onclick="navigateTo('menu-metodo.html')">IR AL MÉTODO</button>
+    </section>
+  </main>
+
+  <footer class="app-footer footer-mini">
+    <span>MÉTODOS NUMÉRICOS</span>
+    <span>MÉTODO DE SIMPSON 3/8</span>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/render-formulas.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      renderFormula('teoria-integral', 'I = \\int_a^b f(x)\\,dx');
+      renderFormula('teoria-formula-simple',
+        'I \\approx \\frac{3h}{8}\\left[f(x_0)+3f(x_1)+3f(x_2)+f(x_3)\\right]');
+      renderFormula('teoria-formula-compuesta',
+        'I \\approx \\frac{3h}{8}\\sum_{i=0}^{n} C_i f(x_i)');
+      renderFormula('teoria-ea', 'E_a = |I_{\\text{exacta}} - I_{\\text{Simpson}}|');
+      renderFormula('teoria-er', 'E_r = \\frac{E_a}{|I_{\\text{exacta}}|}');
+      renderFormula('teoria-ep', 'E_{\\%} = E_r \\cdot 100');
+    });
+  </script>
+</body>
+</html>

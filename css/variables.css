@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --bg-main: #0f1112;
+  --bg-secondary: #090b0c;
+  --surface: #191b1d;
+  --surface-soft: #1f2124;
+  --surface-high: #282b2e;
+  --surface-highest: #32363a;
+  --text-light: #e9e6df;
+  --text-dark: #161616;
+  --text-muted: #d8c3b4;
+  --text-soft: #a89984;
+  --primary: #ffb77b;
+  --primary-hover: #d98a4b;
+  --primary-dark: #8c4f10;
+  --accent: #add461;
+  --accent-hover: #c8f17a;
+  --math-gold: #e9c176;
+  --math-gold-strong: #af8b47;
+  --border-soft: #524439;
+  --border-strong: #a08d80;
+  --danger: #ffb4ab;
+  --danger-strong: #93000a;
+  --warning: #e9c176;
+  --success: #add461;
+  --shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.34);
+  --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.26);
+  --shadow-sm: 0 5px 16px rgba(0, 0, 0, 0.2);
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.25rem;
+  --font-title: "Space Grotesk", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Consolas", "Courier New", monospace;
+  --transition: 0.22s ease;
+}

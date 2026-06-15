@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicaciones gráficas </title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/componentes.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/aplicaciones-graficas.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-outline" onclick="navigateTo('menu-metodo.html')">← VOLVER</button>
+      <h3 style="color:var(--text-light);">APLICACIONES GRÁFICAS</h3>
+    </div>
+    <div class="header-right"><small> Integrales aplicadas</small></div>
+  </header>
+
+  <main class="app-main app-gallery-shell">
+    <section class="app-gallery-hero">
+      <div class="app-gallery-eyebrow">Métodos Numéricos </div>
+      <h1 class="app-gallery-title">Simuladores visuales del Método de Simpson 3/8</h1>
+      <p class="app-gallery-desc">
+        Cada aplicación interpreta el área bajo una curva como una magnitud acumulada: volumen de agua, carga contaminante o volumen excavado. La lógica de Simpson 3/8 se mantiene aislada del simulador general.
+      </p>
+    </section>
+
+    <section class="app-gallery-grid">
+      <article class="app-card">
+        <canvas id="previewRiver" width="520" height="220"></canvas>
+        <div class="app-card-body">
+          <h2>Crecida de río</h2>
+          <p>Integra el caudal Q(t) para estimar el volumen acumulado de agua en un embalse.</p>
+          <div class="app-card-tags"><span>Q(t)</span><span>m³</span><span>Caudal → Volumen</span></div>
+          <button class="btn btn-primary btn-block" onclick="navigateTo('aplicacion-crecida-rio.html')">ABRIR SIMULADOR</button>
+        </div>
+      </article>
+
+      <article class="app-card pollution-accent">
+        <canvas id="previewPollution" width="520" height="220"></canvas>
+        <div class="app-card-body">
+          <h2>Descarga contaminante</h2>
+          <p>Integra la tasa C(t) para estimar la carga contaminante acumulada en un río.</p>
+          <div class="app-card-tags"><span>C(t)</span><span>kg</span><span>Tasa → Carga</span></div>
+          <button class="btn btn-primary btn-block" onclick="navigateTo('aplicacion-contaminacion-rio.html')">ABRIR SIMULADOR</button>
+        </div>
+      </article>
+
+      <article class="app-card excavation-accent">
+        <canvas id="previewExcavation" width="520" height="220"></canvas>
+        <div class="app-card-body">
+          <h2>Volumen excavado</h2>
+          <p>Integra áreas transversales A(x) para estimar el volumen de excavación por secciones.</p>
+          <div class="app-card-tags"><span>A(x)</span><span>m³</span><span>Área → Volumen</span></div>
+          <button class="btn btn-primary btn-block" onclick="navigateTo('aplicacion-volumen-excavado.html')">ABRIR SIMULADOR</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="app-footer footer-mini">
+    <span>MÉTODOS NUMÉRICOS</span>
+    <span>APLICACIONES GRÁFICAS </span>
+  </footer>
+  <script src="../js/main.js"></script>
+  <script>
+    function previewBase(id, kind){
+      var c=document.getElementById(id),ctx=c.getContext('2d'),w=c.width,h=c.height;
+      ctx.fillStyle='#0c0e10';ctx.fillRect(0,0,w,h);
+      ctx.fillStyle='#1c211d';ctx.beginPath();ctx.moveTo(0,h*.58);ctx.lineTo(w*.18,h*.35);ctx.lineTo(w*.34,h*.55);ctx.lineTo(w*.52,h*.32);ctx.lineTo(w*.7,h*.54);ctx.lineTo(w,h*.42);ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.fill();
+      if(kind==='river'){
+        ctx.fillStyle='rgba(68,122,128,.85)';ctx.beginPath();ctx.moveTo(0,h*.68);for(var x=0;x<=w;x+=24)ctx.lineTo(x,h*.66+7*Math.sin(x/34));ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.fill();
+        ctx.fillStyle='#303234';ctx.fillRect(w*.72,h*.32,w*.16,h*.5);ctx.strokeStyle='#a08d80';ctx.strokeRect(w*.72,h*.32,w*.16,h*.5);
+      } else if(kind==='pollution'){
+        ctx.fillStyle='rgba(61,103,102,.9)';ctx.fillRect(0,h*.62,w,h*.38);ctx.fillStyle='rgba(255,180,171,.38)';ctx.beginPath();ctx.ellipse(w*.52,h*.68,130,36,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#333537';ctx.fillRect(w*.08,h*.28,w*.18,h*.24);ctx.fillStyle='#ffb77b';ctx.fillRect(w*.25,h*.42,w*.24,8);
+      } else {
+        ctx.fillStyle='#2b271f';ctx.fillRect(0,h*.72,w,h*.28);ctx.strokeStyle='#e9c176';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,h*.42);for(var i=0;i<=w;i+=30)ctx.lineTo(i,h*.48+30*Math.sin(i/75));ctx.stroke();ctx.fillStyle='rgba(200,128,63,.32)';ctx.beginPath();ctx.moveTo(w*.18,h*.5);ctx.lineTo(w*.82,h*.5);ctx.lineTo(w*.72,h*.76);ctx.lineTo(w*.28,h*.76);ctx.closePath();ctx.fill();
+      }
+    }
+    previewBase('previewRiver','river'); previewBase('previewPollution','pollution'); previewBase('previewExcavation','excavation');
+  </script>
+</body>
+</html>

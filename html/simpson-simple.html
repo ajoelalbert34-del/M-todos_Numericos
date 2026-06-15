@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simpson 3/8 Simple</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/componentes.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@13.0.0/lib/browser/math.js"></script>
+  <script type="module">
+    import "https://unpkg.com/mathlive?module";
+  </script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-outline" onclick="navigateTo('menu-metodo.html')">← VOLVER</button>
+      <h3 style="color:var(--text-light);">SIMPSON 3/8 SIMPLE</h3>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div class="calculator-grid">
+
+      <div class="card">
+        <h2>ENTRADA DE DATOS</h2>
+        <div class="input-group">
+          <label>f(x):</label>
+          <div class="math-input-container">
+            <math-field id="mathfield-simple" virtual-keyboard-mode="manual" smart-mode>
+              f(x)=
+            </math-field>
+          </div>
+          <div class="math-keyboard" id="kb-simple">
+            <button class="btn btn-sm btn-accent" data-insert="x">x</button>
+            <button class="btn btn-sm btn-accent" data-insert="x^2">x²</button>
+            <button class="btn btn-sm btn-accent" data-insert="x^3">x³</button>
+            <button class="btn btn-sm btn-accent" data-insert="x^{}">xⁿ</button>
+            <button class="btn btn-sm btn-accent" data-insert="\sqrt{}">√</button>
+            <button class="btn btn-sm btn-accent" data-insert="\pi">π</button>
+            <button class="btn btn-sm btn-accent" data-insert="e">e</button>
+            <button class="btn btn-sm btn-accent" data-insert="\sin()">sin</button>
+            <button class="btn btn-sm btn-accent" data-insert="\cos()">cos</button>
+            <button class="btn btn-sm btn-accent" data-insert="\tan()">tan</button>
+            <button class="btn btn-sm btn-accent" data-insert="\ln()">ln</button>
+            <button class="btn btn-sm btn-accent" data-insert="\log()">log</button>
+            <button class="btn btn-sm btn-accent" data-insert="\exp()">exp</button>
+            <button class="btn btn-sm btn-accent" data-insert="+">+</button>
+            <button class="btn btn-sm btn-accent" data-insert="-">−</button>
+            <button class="btn btn-sm btn-accent" data-insert="\times">×</button>
+            <button class="btn btn-sm btn-accent" data-insert="\div">÷</button>
+            <button class="btn btn-sm btn-accent" data-insert="(">(</button>
+            <button class="btn btn-sm btn-accent" data-insert=")">)</button>
+            <button class="btn btn-sm btn-danger" data-action="clear">Borrar</button>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label>a (límite inferior):</label>
+            <input type="number" id="a-simple" value="0" step="any">
+          </div>
+          <div class="input-group">
+            <label>b (límite superior):</label>
+            <input type="number" id="b-simple" value="3" step="any">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>n (subintervalos):</label>
+          <input type="number" value="3" disabled style="background:var(--surface-soft);opacity:0.7;">
+          <small>Fijo: n = 3 para Simpson 3/8 simple.</small>
+        </div>
+
+        <div class="input-group">
+          <label>Valor exacto / referencia (opcional):</label>
+          <input type="number" id="exacta-simple" step="any" placeholder="Ej: 20.25">
+        </div>
+
+        <div class="input-row" style="margin-top:0.5rem;">
+          <div class="input-group">
+            <label>Precisión del cálculo:</label>
+            <select id="precision-mode">
+              <option value="decimals">Decimales</option>
+              <option value="sigfigs">Cifras significativas</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Cantidad:</label>
+            <input type="number" id="precision-amount" value="6" min="1" max="12" style="width:80px;">
+          </div>
+        </div>
+
+        <div class="calculator-botones">
+          <button class="btn btn-primary" onclick="calcularSimple()">CALCULAR</button>
+          <button class="btn btn-outline" onclick="limpiarSimple()">LIMPIAR</button>
+          <button class="btn btn-outline" onclick="navigateTo('simulador.html?modo=simple')">VER EN SIMULADOR</button>
+        </div>
+        <div id="alerta-simple" class="mt-2"></div>
+      </div>
+
+      <div class="card hidden" id="desarrollo-simple">
+        <h2>DESARROLLO MATEMÁTICO</h2>
+
+        <div class="stage-section">
+          <h4> Datos ingresados</h4>
+          <p id="stage1-simple"></p>
+        </div>
+
+        <div class="stage-section">
+          <h4> Cálculo del tamaño de paso h</h4>
+          <div id="formula-h"></div>
+        </div>
+
+        <div class="stage-section">
+          <h4> Generación de puntos</h4>
+          <div id="formula-puntos"></div>
+        </div>
+
+        <div class="stage-section">
+          <h4> Tabla de coeficientes</h4>
+          <div id="tabla-simple-container"></div>
+        </div>
+
+        <div class="stage-section">
+          <h4> Sustitución en la fórmula</h4>
+          <div id="formula-simpson"></div>
+        </div>
+
+        <div class="stage-section">
+          <h4> Resultado y error</h4>
+          <div id="resultado-simple"></div>
+          <div id="error-section" class="hidden">
+            <div id="formula-ea"></div>
+            <div id="formula-er"></div>
+            <div id="formula-ep"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer footer-mini">
+    <span>MÉTODOS NUMÉRICOS</span>
+    <span>MÉTODO DE SIMPSON 3/8</span>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/errores.js"></script>
+  <script src="../js/render-tablas.js"></script>
+  <script src="../js/render-formulas.js"></script>
+  <script src="../js/simpson-simple.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      waitForMathLive().then(function () {
+        var mf = document.getElementById('mathfield-simple');
+        if (!mf) return;
+        var kb = document.getElementById('kb-simple');
+
+        kb.addEventListener('click', function (e) {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        e.preventDefault();
+
+        if (btn.dataset.action === 'clear') {
+          mf.setValue('');
+          return;
+        }
+        if (btn.dataset.insert) {
+          mf.insertString(btn.dataset.insert);
+          mf.focus();
+          return;
+        }
+      });
+    });
+  });
+
+  window.calcularSimple = function () {
+    ejecutarSimpsonSimple(
+      document.getElementById('mathfield-simple'),
+      document.getElementById('a-simple'),
+      document.getElementById('b-simple'),
+      document.getElementById('exacta-simple'),
+      'alerta-simple',
+      'resultado-simple',
+      'desarrollo-simple',
+      'tabla-simple-container',
+      'error-section'
+    );
+  };
+
+  window.limpiarSimple = function () {
+    try { document.getElementById('mathfield-simple').setValue(''); } catch (e) {}
+    document.getElementById('a-simple').value = '0';
+    document.getElementById('b-simple').value = '3';
+    document.getElementById('exacta-simple').value = '';
+    document.getElementById('resultado-simple').innerHTML = '';
+    document.getElementById('tabla-simple-container').innerHTML = '';
+    document.getElementById('desarrollo-simple').classList.add('hidden');
+    document.getElementById('error-section').classList.add('hidden');
+    document.getElementById('alerta-simple').innerHTML = '';
+  };
+  </script>
+</body>
+</html>

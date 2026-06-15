@@ -1,0 +1,7 @@
+@"
+firebase-debug.log
+.firebase/
+node_modules/
+*.zip
+.DS_Store
+"@ | Out-File -Encoding utf8 .gitignore.firebase/

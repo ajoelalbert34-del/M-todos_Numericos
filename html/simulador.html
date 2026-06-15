@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador </title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/componentes.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@13.0.0/lib/browser/math.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script type="module">
+    import "https://unpkg.com/mathlive?module";
+  </script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-outline" onclick="navigateTo('menu-metodo.html')">← VOLVER</button>
+      <h3 style="color:var(--text-light);">SIMULADOR </h3>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div class="card simulador-controls">
+      <h2>CONTROLES DEL SIMULADOR</h2>
+
+      <div class="input-group">
+        <label>f(x):</label>
+        <div class="math-input-container">
+          <math-field id="mathfield-sim" virtual-keyboard-mode="manual" smart-mode>
+            f(x)=
+          </math-field>
+        </div>
+        <div class="math-keyboard" id="kb-sim">
+          <button class="btn btn-sm btn-accent" data-insert="x">x</button>
+          <button class="btn btn-sm btn-accent" data-insert="x^2">x²</button>
+          <button class="btn btn-sm btn-accent" data-insert="x^3">x³</button>
+          <button class="btn btn-sm btn-accent" data-insert="x^{}">xⁿ</button>
+          <button class="btn btn-sm btn-accent" data-insert="\sqrt{}">√</button>
+          <button class="btn btn-sm btn-accent" data-insert="\pi">π</button>
+          <button class="btn btn-sm btn-accent" data-insert="e">e</button>
+          <button class="btn btn-sm btn-accent" data-insert="\sin()">sin</button>
+          <button class="btn btn-sm btn-accent" data-insert="\cos()">cos</button>
+          <button class="btn btn-sm btn-accent" data-insert="\tan()">tan</button>
+          <button class="btn btn-sm btn-accent" data-insert="\ln()">ln</button>
+          <button class="btn btn-sm btn-accent" data-insert="\log()">log</button>
+          <button class="btn btn-sm btn-accent" data-insert="\exp()">exp</button>
+          <button class="btn btn-sm btn-accent" data-insert="+">+</button>
+          <button class="btn btn-sm btn-accent" data-insert="-">−</button>
+          <button class="btn btn-sm btn-accent" data-insert="\times">×</button>
+          <button class="btn btn-sm btn-accent" data-insert="\div">÷</button>
+          <button class="btn btn-sm btn-accent" data-insert="(">(</button>
+          <button class="btn btn-sm btn-accent" data-insert=")">)</button>
+          <button class="btn btn-sm btn-danger" data-action="clear">Borrar</button>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>a (límite inferior):</label>
+          <input type="number" id="a-sim" value="0" step="any">
+        </div>
+        <div class="input-group">
+          <label>b (límite superior):</label>
+          <input type="number" id="b-sim" value="3" step="any">
+        </div>
+        <div class="input-group">
+          <label>Modo:</label>
+          <select id="modo-sim" onchange="actualizarModoSim()">
+            <option value="simple">Simple</option>
+            <option value="compuesto">Compuesto</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-group" id="n-sim-group">
+        <label>n (subintervalos):</label>
+        <input type="number" id="n-sim" value="6" min="3" step="3">
+        <small>n válidos: 3, 6, 9, 12, 15, 18, ...</small>
+      </div>
+
+      <div class="input-group">
+        <label>Valor referencial de ED o integrales(opcional):</label>
+        <input type="number" id="exacta-sim" step="any" placeholder="Ej: 20.25">
+      </div>
+
+      <div class="input-row" style="margin-top:0.5rem;">
+        <div class="input-group">
+          <label>Precisión del cálculo:</label>
+          <select id="precision-mode">
+            <option value="decimals">Decimales</option>
+            <option value="sigfigs">Cifras significativas</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Cantidad:</label>
+          <input type="number" id="precision-amount" value="6" min="1" max="12" style="width:80px;">
+        </div>
+      </div>
+
+      <div class="calculator-botones">
+        <button class="btn btn-primary" onclick="graficarSim()">GRAFICAR Y CALCULAR</button>
+        <button class="btn btn-outline" onclick="limpiarSim()">LIMPIAR</button>
+        <button class="btn btn-outline" onclick="mostrarTablaSim()">MOSTRAR TABLA</button>
+      </div>
+      <div id="alerta-sim" class="mt-2"></div>
+    </div>
+
+    <div class="simulador-graph-area">
+      <div class="plotly-container" id="plotly-graph"></div>
+    </div>
+
+    <div class="simulador-info-grid">
+      <div class="card" id="sim-info"></div>
+      <div class="card" id="sim-bloques">
+        <h3>Bloques del Método</h3>
+        <p class="note">Configure la función y pulse Graficar para ver los bloques.</p>
+      </div>
+    </div>
+
+    <div class="card hidden" id="sim-tabla-section">
+      <h2>TABLA DE CÁLCULO</h2>
+      <div id="sim-tabla-container"></div>
+    </div>
+
+    <div class="card hidden" id="sim-error-section">
+      <h2>ERRORES</h2>
+      <div id="sim-error-content"></div>
+    </div>
+  </main>
+
+  <footer class="app-footer footer-mini">
+    <span>MÉTODOS NUMÉRICOS</span>
+    <span>MÉTODO DE SIMPSON 3/8</span>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/errores.js"></script>
+  <script src="../js/render-tablas.js"></script>
+  <script src="../js/render-formulas.js"></script>
+  <script src="../js/simpson-simple.js"></script>
+  <script src="../js/simpson-compuesto.js"></script>
+  <script src="../js/simulador.js"></script>
+  <script>
+    window.ultimoResultado = null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      waitForMathLive().then(function () {
+        var mf = document.getElementById('mathfield-sim');
+        if (!mf) return;
+        var kb = document.getElementById('kb-sim');
+
+        kb.addEventListener('click', function (e) {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          e.preventDefault();
+
+          if (btn.dataset.action === 'clear') {
+            mf.setValue('');
+            return;
+          }
+          if (btn.dataset.insert) {
+            mf.insertString(btn.dataset.insert);
+            mf.focus();
+            return;
+          }
+        });
+
+        const modo = getParam('modo');
+        if (modo === 'compuesto') {
+          document.getElementById('modo-sim').value = 'compuesto';
+          actualizarModoSim();
+        }
+      });
+    });
+
+    window.actualizarModoSim = function () {
+      const modo = document.getElementById('modo-sim').value;
+      const nGroup = document.getElementById('n-sim-group');
+      if (modo === 'simple') {
+        nGroup.querySelector('input').value = '3';
+        nGroup.querySelector('input').disabled = true;
+        nGroup.querySelector('small').textContent = 'Fijo: n = 3 para modo simple.';
+      } else {
+        nGroup.querySelector('input').disabled = false;
+        nGroup.querySelector('small').textContent = 'n válidos: 3, 6, 9, 12, 15, 18, ...';
+      }
+    };
+
+    window.graficarSim = function () {
+      const resultado = ejecutarSimulador(
+        document.getElementById('mathfield-sim'),
+        document.getElementById('a-sim'),
+        document.getElementById('b-sim'),
+        document.getElementById('modo-sim'),
+        document.getElementById('n-sim'),
+        document.getElementById('exacta-sim'),
+        'plotly-graph',
+        'alerta-sim',
+        'sim-info',
+        'sim-error-content'
+      );
+      if (resultado) {
+        window.ultimoResultado = resultado;
+        document.getElementById('sim-info').classList.remove('hidden');
+      }
+    };
+
+    window.limpiarSim = function () {
+      try { document.getElementById('mathfield-sim').setValue(''); } catch (e) {}
+      document.getElementById('a-sim').value = '0';
+      document.getElementById('b-sim').value = '3';
+      document.getElementById('n-sim').value = '6';
+      document.getElementById('exacta-sim').value = '';
+      document.getElementById('modo-sim').value = 'simple';
+      document.getElementById('plotly-graph').innerHTML = '';
+      document.getElementById('sim-info').innerHTML = '<h3>Información del Cálculo</h3><p class="note">Configure la función y pulse Graficar.</p>';
+      document.getElementById('sim-bloques').innerHTML = '<h3>Bloques del Método</h3><p class="note">Configure la función y pulse Graficar para ver los bloques.</p>';
+      document.getElementById('sim-tabla-container').innerHTML = '';
+      document.getElementById('sim-tabla-section').classList.add('hidden');
+      document.getElementById('sim-error-section').classList.add('hidden');
+      document.getElementById('alerta-sim').innerHTML = '';
+      window.ultimoResultado = null;
+      window.actualizarModoSim();
+    };
+
+    window.mostrarTablaSim = function () {
+      if (!window.ultimoResultado) {
+        showAlert('alerta-sim', 'Primero debe graficar y calcular.', 'warning');
+        return;
+      }
+      const res = window.ultimoResultado;
+      const r = res.resultado;
+      const modo = document.getElementById('modo-sim').value;
+      var precisionConfig = getPrecisionConfig();
+
+      let tablaHTML;
+      if (modo === 'simple') {
+        tablaHTML = renderTablaSimple(r.puntos, r.fValores, r.coeficientes, r.Cfi, precisionConfig);
+      } else {
+        tablaHTML = renderTablaCompuesta(r.puntos, r.fValores, r.tipos, r.coeficientes, r.Cfi, precisionConfig);
+      }
+      document.getElementById('sim-tabla-container').innerHTML = tablaHTML;
+      document.getElementById('sim-tabla-section').classList.remove('hidden');
+    };
+
+    window.verDesarrollo = function () {
+      const modo = document.getElementById('modo-sim').value;
+      if (modo === 'simple') {
+        navigateTo('simpson-simple.html');
+      } else {
+        navigateTo('simpson-compuesto.html');
+      }
+    };
+  </script>
+</body>
+</html>

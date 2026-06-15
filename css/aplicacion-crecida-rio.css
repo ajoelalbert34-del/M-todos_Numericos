@@ -1,0 +1,341 @@
+
+/* ============================================
+   APLICACIÓN GRÁFICA — CRECIDA DE RÍO
+   ============================================ */
+
+.river-shell {
+  max-width: 1440px;
+}
+
+.river-title-block {
+  margin: 1.2rem 0 1.5rem;
+}
+
+.river-eyebrow {
+  display: inline-flex;
+  gap: .5rem;
+  align-items: center;
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: .6rem;
+}
+
+.river-title {
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  color: var(--text-light);
+  line-height: .98;
+  margin-bottom: .8rem;
+}
+
+.river-description {
+  color: var(--text-muted);
+  max-width: 780px;
+  font-size: 1.08rem;
+}
+
+.river-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 420px;
+  gap: 1rem;
+  align-items: start;
+}
+
+.river-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.river-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--border-soft);
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.river-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  color: var(--accent);
+}
+
+.river-status::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 14px currentColor;
+}
+
+.river-scene {
+  position: relative;
+  min-height: 540px;
+  background: #0c0e10;
+}
+
+#riverSceneCanvas {
+  width: 100%;
+  height: 540px;
+  display: block;
+}
+
+.river-metrics {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  z-index: 2;
+}
+
+.metric-box {
+  min-width: 155px;
+  padding: .75rem .85rem;
+  border: 1px solid var(--border-soft);
+  background: rgba(12,14,16,.74);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-sm);
+}
+
+.metric-label {
+  display: block;
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .25rem;
+}
+
+.metric-value {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.metric-unit {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: .75rem;
+}
+
+.river-form {
+  padding: 1rem;
+}
+
+.river-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .85rem;
+}
+
+.river-form .input-group {
+  margin-bottom: .85rem;
+}
+
+.river-form input,
+.river-form select {
+  width: 100%;
+  padding: .78rem .85rem;
+}
+
+.river-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .7rem;
+  margin-top: .8rem;
+}
+
+.river-formula {
+  margin: 1rem;
+  padding: .9rem;
+  border: 1px solid rgba(82,68,57,.75);
+  background: rgba(12,14,16,.52);
+  border-radius: var(--radius-sm);
+}
+
+.river-formula small {
+  display: block;
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: .45rem;
+}
+
+.river-formula code {
+  color: var(--math-gold);
+  font-size: .9rem;
+}
+
+.river-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, .8fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.river-chart-wrap {
+  position: relative;
+  padding: 1rem;
+}
+
+#riverChartCanvas {
+  width: 100%;
+  height: 360px;
+  display: block;
+}
+
+.river-results {
+  padding: 1rem;
+  display: grid;
+  gap: .8rem;
+}
+
+.result-card {
+  padding: .9rem;
+  border: 1px solid var(--border-soft);
+  background: rgba(12,14,16,.4);
+  border-radius: var(--radius-sm);
+}
+
+.result-card strong {
+  display: block;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .35rem;
+}
+
+.result-card span {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.river-dev {
+  margin-top: 1rem;
+}
+
+.river-dev.hidden {
+  display: none;
+}
+
+.dev-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: .86rem;
+}
+
+.dev-table th,
+.dev-table td {
+  border-bottom: 1px solid var(--border-soft);
+  padding: .65rem .5rem;
+  text-align: right;
+  color: var(--text-muted);
+}
+
+.dev-table th {
+  color: var(--primary);
+  text-transform: uppercase;
+  font-size: .7rem;
+  letter-spacing: .05em;
+}
+
+.dev-table td:first-child,
+.dev-table th:first-child {
+  text-align: left;
+}
+
+.river-progress {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  height: .5rem;
+  border: 1px solid var(--border-soft);
+  background: rgba(12,14,16,.75);
+  border-radius: 999px;
+  overflow: hidden;
+  z-index: 2;
+}
+
+#riverProgressBar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width .15s linear;
+}
+
+@media (max-width: 1100px) {
+  .river-layout,
+  .river-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .river-scene,
+  #riverSceneCanvas {
+    min-height: 440px;
+    height: 440px;
+  }
+}
+
+@media (max-width: 640px) {
+  .river-form-grid,
+  .river-actions {
+    grid-template-columns: 1fr;
+  }
+  .metric-box {
+    min-width: 135px;
+  }
+}
+
+/* Pulido final: legibilidad y mayor fidelidad Obsidian */
+.river-title { font-family: var(--font-title); letter-spacing: -0.04em; }
+.river-scene {
+  background:
+    radial-gradient(circle at 25% 18%, rgba(173,212,97,.08), transparent 18rem),
+    radial-gradient(circle at 72% 35%, rgba(255,183,123,.06), transparent 20rem),
+    #0c0e10;
+}
+.river-formula .river-katex { color: var(--math-gold); overflow-x: auto; padding: .15rem 0; }
+.inline-katex { color: var(--math-gold); }
+.dev-table tbody tr:hover td {
+  background: rgba(255,183,123,.10);
+  color: var(--text-light);
+}
+.dev-table thead th {
+  background: var(--primary);
+  color: #15110e;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.dev-table td { color: var(--text-muted); background: #1a1c1e; }
+.dev-table tr:nth-child(even) td { background: #202225; }
+.river-panel-header button { min-width: auto; }
+.result-card span { white-space: nowrap; }
+@media (max-width: 640px) {
+  .river-title { font-size: 2.35rem; }
+}

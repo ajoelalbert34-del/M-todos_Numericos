@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicación gráfica — Volumen excavado con Simpson 3/8</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/componentes.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/aplicacion-crecida-rio.css">
+  <link rel="stylesheet" href="../css/aplicaciones-graficas.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-outline" onclick="navigateTo('aplicaciones-graficas.html')">← VOLVER</button>
+      <h3 style="color:var(--text-light);">APLICACIÓN GRÁFICA</h3>
+    </div>
+    <div class="header-right"><small> Área → Volumen</small></div>
+  </header>
+
+  <main class="app-main viz-shell excavation-accent">
+    <section class="viz-title-block">
+      <div class="viz-eyebrow">Métodos Numéricos </div>
+      <h1 class="viz-title">Volumen excavado</h1>
+      <p class="viz-description">
+        Esta aplicación estima el volumen de excavación integrando áreas transversales <strong>A(x)</strong> a lo largo de una distancia. El área bajo la curva A(x) representa el volumen total aproximado.
+      </p>
+    </section>
+
+    <section class="viz-layout">
+      <article class="viz-panel">
+        <div class="viz-panel-header"><span>Escena principal · Topografía_Secciones</span><span id="excavationStatus" class="viz-status">Listo</span></div>
+        <div class="viz-scene">
+          <canvas id="excavationSceneCanvas" width="980" height="540"></canvas>
+          <div class="viz-metrics">
+            <div class="metric-box"><span class="metric-label">Volumen acumulado</span><span id="excavationVolumen" class="metric-value">0.00</span><span class="metric-unit">m³</span></div>
+            <div class="metric-box"><span class="metric-label">Área actual A(x)</span><span id="excavationArea" class="metric-value">0.00</span><span class="metric-unit">m²</span></div>
+            <div class="metric-box"><span class="metric-label">Estación</span><span id="excavationEstacion" class="metric-value">0</span><span class="metric-unit">%</span></div>
+          </div>
+          <div class="viz-progress"><div id="excavationProgressBar"></div></div>
+        </div>
+      </article>
+
+      <aside class="viz-panel">
+        <div class="viz-panel-header"><span>Parámetros de integración</span></div>
+        <div class="viz-form">
+          <div class="viz-form-grid">
+            <div class="input-group"><label for="eXInicial">x inicial (m)</label><input id="eXInicial" type="number" value="0" step="5"></div>
+            <div class="input-group"><label for="eXFinal">x final (m)</label><input id="eXFinal" type="number" value="90" step="5"></div>
+          </div>
+          <div class="input-group"><label for="eN">n subintervalos</label><input id="eN" type="number" value="12" step="3" min="3"><small>n debe ser múltiplo de 3.</small></div>
+          <div class="input-group"><label for="ePerfil">Perfil de terreno A(x)</label><select id="ePerfil"><option value="zanja">Zanja regular</option><option value="canal" selected>Canal irregular</option><option value="carretera">Carretera en corte</option><option value="profunda">Excavación profunda</option></select></div>
+          <div class="viz-actions"><button id="btnSimularExc" class="btn btn-primary" type="button">▷ SIMULAR</button><button id="btnReiniciarExc" class="btn btn-outline" type="button">⟳</button></div>
+          <button id="btnDesarrolloExc" class="btn btn-outline btn-block" style="margin-top:.75rem;" type="button">VER DESARROLLO MATEMÁTICO</button>
+          <div id="excavationAlert" class="mt-2"></div>
+        </div>
+        <div class="viz-formula"><small>Fórmula Simpson 3/8 compuesto</small><div id="excavationFormulaLatex" class="viz-katex"></div></div>
+      </aside>
+    </section>
+
+    <section class="viz-bottom">
+      <article class="viz-panel"><div class="viz-panel-header"><span>Gráfica A(x) vs distancia · volumen acumulado</span><span>m² · metros</span></div><div class="viz-chart-wrap"><canvas id="excavationChartCanvas" width="900" height="360"></canvas></div></article>
+      <article class="viz-panel viz-results">
+        <div class="result-card"><strong>Volumen aproximado</strong><span id="eResultadoVolumen">0.00 m³</span></div>
+        <div class="result-card"><strong>h</strong><span id="eResultadoH">0.00 m</span></div>
+        <div class="result-card"><strong>n / bloques</strong><span id="eResultadoBloques">0 / 0</span></div>
+        <div class="result-card"><strong>Área máxima</strong><span id="eResultadoMax">0.00 m²</span></div>
+      </article>
+    </section>
+
+    <section id="excavationDevelopment" class="viz-panel viz-dev hidden">
+      <div class="viz-panel-header"><span>Desarrollo matemático · Simpson 3/8</span><button id="btnCerrarExc" class="btn btn-sm btn-outline" type="button">Cerrar</button></div>
+      <div class="viz-form">
+        <p>La integral de áreas transversales representa volumen excavado: <span id="excavationIntegralLatex" class="inline-katex"></span>. Para Simpson 3/8 compuesto se aplican pesos <code>1, 3, 3, 2, 3, 3, 2, ..., 1</code>.</p>
+        <div style="overflow-x:auto;"><table class="dev-table"><thead><tr><th>i</th><th>xᵢ</th><th>A(xᵢ)</th><th>coef.</th><th>contribución</th></tr></thead><tbody id="tablaDesarrolloExc"></tbody></table></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer footer-mini"><span>MÉTODOS NUMÉRICOS</span><span>VOLUMEN EXCAVADO </span></footer>
+  <script src="../js/main.js"></script>
+  <script src="../js/aplicacion-volumen-excavado.js"></script>
+</body>
+</html>

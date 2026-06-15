@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicación gráfica — Descarga contaminante con Simpson 3/8</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/componentes.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/aplicacion-crecida-rio.css">
+  <link rel="stylesheet" href="../css/aplicaciones-graficas.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-outline" onclick="navigateTo('aplicaciones-graficas.html')">← VOLVER</button>
+      <h3 style="color:var(--text-light);">APLICACIÓN GRÁFICA</h3>
+    </div>
+    <div class="header-right"><small> Tasa → Carga</small></div>
+  </header>
+
+  <main class="app-main viz-shell pollution-accent">
+    <section class="viz-title-block">
+      <div class="viz-eyebrow">Métodos Numéricos </div>
+      <h1 class="viz-title">Descarga contaminante</h1>
+      <p class="viz-description">
+        Esta aplicación estima la carga contaminante acumulada en un río integrando la tasa de descarga <strong>C(t)</strong> respecto al tiempo. El área bajo la curva representa la masa total descargada.
+      </p>
+    </section>
+
+    <section class="viz-layout">
+      <article class="viz-panel">
+        <div class="viz-panel-header"><span>Escena principal · Río_Contaminante</span><span id="pollutionStatus" class="viz-status">Normal</span></div>
+        <div class="viz-scene">
+          <canvas id="pollutionSceneCanvas" width="980" height="540"></canvas>
+          <div class="viz-metrics">
+            <div class="metric-box"><span class="metric-label">Carga acumulada</span><span id="pollutionCarga" class="metric-value">0.00</span><span class="metric-unit">kg</span></div>
+            <div class="metric-box"><span class="metric-label">Tasa actual C(t)</span><span id="pollutionTasa" class="metric-value">0.00</span><span class="metric-unit">kg/h</span></div>
+            <div class="metric-box"><span class="metric-label">Uso del límite</span><span id="pollutionNivel" class="metric-value">0</span><span class="metric-unit">%</span></div>
+          </div>
+          <div class="viz-progress"><div id="pollutionProgressBar"></div></div>
+        </div>
+      </article>
+
+      <aside class="viz-panel">
+        <div class="viz-panel-header"><span>Parámetros de integración</span></div>
+        <div class="viz-form">
+          <div class="viz-form-grid">
+            <div class="input-group"><label for="cTInicial">t inicial (h)</label><input id="cTInicial" type="number" value="0" step="0.5"></div>
+            <div class="input-group"><label for="cTFinal">t final (h)</label><input id="cTFinal" type="number" value="10" step="0.5"></div>
+          </div>
+          <div class="input-group"><label for="cN">n subintervalos</label><input id="cN" type="number" value="12" step="3" min="3"><small>n debe ser múltiplo de 3.</small></div>
+          <div class="input-group"><label for="cLimite">límite permitido (kg)</label><input id="cLimite" type="number" value="950" step="50"></div>
+          <div class="input-group"><label for="cPerfil">Perfil de descarga C(t)</label><select id="cPerfil"><option value="controlada">Descarga controlada</option><option value="constante">Descarga constante</option><option value="accidente" selected>Pico accidental</option><option value="fuga">Fuga progresiva</option></select></div>
+          <div class="viz-actions"><button id="btnSimularCont" class="btn btn-primary" type="button">▷ SIMULAR</button><button id="btnReiniciarCont" class="btn btn-outline" type="button">⟳</button></div>
+          <button id="btnDesarrolloCont" class="btn btn-outline btn-block" style="margin-top:.75rem;" type="button">VER DESARROLLO MATEMÁTICO</button>
+          <div id="pollutionAlert" class="mt-2"></div>
+        </div>
+        <div class="viz-formula"><small>Fórmula Simpson 3/8 compuesto</small><div id="pollutionFormulaLatex" class="viz-katex"></div></div>
+      </aside>
+    </section>
+
+    <section class="viz-bottom">
+      <article class="viz-panel"><div class="viz-panel-header"><span>Gráfica C(t) vs t · carga acumulada</span><span>kg/h · horas</span></div><div class="viz-chart-wrap"><canvas id="pollutionChartCanvas" width="900" height="360"></canvas></div></article>
+      <article class="viz-panel viz-results">
+        <div class="result-card"><strong>Carga aproximada</strong><span id="cResultadoCarga">0.00 kg</span></div>
+        <div class="result-card"><strong>h</strong><span id="cResultadoH">0.00 h</span></div>
+        <div class="result-card"><strong>n / bloques</strong><span id="cResultadoBloques">0 / 0</span></div>
+        <div class="result-card"><strong>Tasa máxima</strong><span id="cResultadoMax">0.00 kg/h</span></div>
+      </article>
+    </section>
+
+    <section id="pollutionDevelopment" class="viz-panel viz-dev hidden">
+      <div class="viz-panel-header"><span>Desarrollo matemático · Simpson 3/8</span><button id="btnCerrarCont" class="btn btn-sm btn-outline" type="button">Cerrar</button></div>
+      <div class="viz-form">
+        <p>La integral de la tasa de descarga representa carga acumulada: <span id="pollutionIntegralLatex" class="inline-katex"></span>. Para Simpson 3/8 compuesto se aplican pesos <code>1, 3, 3, 2, 3, 3, 2, ..., 1</code>.</p>
+        <div style="overflow-x:auto;"><table class="dev-table"><thead><tr><th>i</th><th>tᵢ</th><th>C(tᵢ)</th><th>coef.</th><th>contribución</th></tr></thead><tbody id="tablaDesarrolloCont"></tbody></table></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer footer-mini"><span>MÉTODOS NUMÉRICOS</span><span>DESCARGA CONTAMINANTE </span></footer>
+  <script src="../js/main.js"></script>
+  <script src="../js/aplicacion-contaminacion-rio.js"></script>
+</body>
+</html>

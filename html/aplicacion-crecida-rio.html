@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicación gráfica — Crecida de río con Simpson 3/8</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/componentes.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/aplicacion-crecida-rio.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-outline" onclick="navigateTo('menu-metodo.html')">← VOLVER</button>
+      <h3 style="color:var(--text-light);">APLICACIÓN GRÁFICA</h3>
+    </div>
+    <div class="header-right">
+      <small> Caudal → Volumen</small>
+    </div>
+  </header>
+
+  <main class="app-main river-shell">
+    <section class="river-title-block">
+      <div class="river-eyebrow">Métodos Numéricos </div>
+      <h1 class="river-title">Simulación de crecida</h1>
+      <p class="river-description">
+        Esta aplicación visual estima el volumen acumulado en un embalse integrando el caudal
+        <strong>Q(t)</strong> respecto al tiempo. La regla compuesta de Simpson 3/8 aproxima el área bajo la curva de caudal.
+      </p>
+    </section>
+
+    <section class="river-layout">
+      <article class="river-panel">
+        <div class="river-panel-header">
+          <span>Escena principal · Embalse_01</span>
+          <span id="riverStatus" class="river-status">Listo</span>
+        </div>
+        <div class="river-scene">
+          <canvas id="riverSceneCanvas" width="980" height="540"></canvas>
+          <div class="river-metrics">
+            <div class="metric-box">
+              <span class="metric-label">Volumen acumulado</span>
+              <span id="volumenActual" class="metric-value">0.00</span>
+              <span class="metric-unit">m³</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Caudal actual Q(t)</span>
+              <span id="caudalActual" class="metric-value">0.00</span>
+              <span class="metric-unit">m³/s</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Nivel del embalse</span>
+              <span id="nivelActual" class="metric-value">18</span>
+              <span class="metric-unit">%</span>
+            </div>
+          </div>
+          <div class="river-progress"><div id="riverProgressBar"></div></div>
+        </div>
+      </article>
+
+      <aside class="river-panel">
+        <div class="river-panel-header">
+          <span>Parámetros de integración</span>
+        </div>
+        <div class="river-form">
+          <div class="river-form-grid">
+            <div class="input-group">
+              <label for="tInicial">t inicial (h)</label>
+              <input id="tInicial" type="number" value="0" step="0.5">
+            </div>
+            <div class="input-group">
+              <label for="tFinal">t final (h)</label>
+              <input id="tFinal" type="number" value="12" step="0.5">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="nSubintervalos">n subintervalos</label>
+            <input id="nSubintervalos" type="number" value="6" step="3" min="3">
+            <small>n debe ser múltiplo de 3.</small>
+          </div>
+
+          <div class="input-group">
+            <label for="perfilLluvia">Perfil de lluvia Q(t)</label>
+            <select id="perfilLluvia">
+              <option value="normal">Normal estable</option>
+              <option value="tormenta" selected>Tormenta cíclica</option>
+              <option value="crecida">Crecida rápida</option>
+              <option value="pico">Pico intenso</option>
+            </select>
+          </div>
+
+          <div class="river-actions">
+            <button id="btnSimularRio" class="btn btn-primary" type="button">▷ SIMULAR</button>
+            <button id="btnReiniciarRio" class="btn btn-outline" type="button">⟳</button>
+          </div>
+          <button id="btnDesarrolloRio" class="btn btn-outline btn-block" style="margin-top:.75rem;" type="button">VER DESARROLLO MATEMÁTICO</button>
+
+          <div id="riverAlert" class="mt-2"></div>
+        </div>
+
+        <div class="river-formula">
+          <small>Fórmula Simpson 3/8 compuesto</small>
+          <div id="riverFormulaLatex" class="river-katex"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="river-bottom">
+      <article class="river-panel">
+        <div class="river-panel-header">
+          <span>Gráfica Q(t) vs t · área acumulada</span>
+          <span>m³/s · horas</span>
+        </div>
+        <div class="river-chart-wrap">
+          <canvas id="riverChartCanvas" width="900" height="360"></canvas>
+        </div>
+      </article>
+
+      <article class="river-panel river-results">
+        <div class="result-card">
+          <strong>Volumen aproximado</strong>
+          <span id="resultadoVolumen">0.00 m³</span>
+        </div>
+        <div class="result-card">
+          <strong>h</strong>
+          <span id="resultadoH">0.00 h</span>
+        </div>
+        <div class="result-card">
+          <strong>n / bloques</strong>
+          <span id="resultadoBloques">0 / 0</span>
+        </div>
+        <div class="result-card">
+          <strong>Caudal máximo</strong>
+          <span id="resultadoCaudalMax">0.00 m³/s</span>
+        </div>
+      </article>
+    </section>
+
+    <section id="riverDevelopment" class="river-panel river-dev hidden">
+      <div class="river-panel-header">
+        <span>Desarrollo matemático · Simpson 3/8</span>
+        <button id="btnCerrarDesarrollo" class="btn btn-sm btn-outline" type="button">Cerrar</button>
+      </div>
+      <div class="river-form">
+        <p>
+          La integral del caudal representa volumen acumulado:
+          <span id="riverIntegralLatex" class="inline-katex"></span>. Para Simpson 3/8 compuesto se aplican pesos
+          <code>1, 3, 3, 2, 3, 3, 2, ..., 1</code>.
+        </p>
+        <div style="overflow-x:auto;">
+          <table class="dev-table">
+            <thead>
+              <tr>
+                <th>i</th>
+                <th>tᵢ</th>
+                <th>Q(tᵢ)</th>
+                <th>coef.</th>
+                <th>contribución</th>
+              </tr>
+            </thead>
+            <tbody id="tablaDesarrolloRio">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer footer-mini">
+    <span>MÉTODOS NUMÉRICOS</span>
+    <span>CRECIDA DE RÍO</span>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/render-formulas.js"></script>
+  <script src="../js/aplicacion-crecida-rio.js"></script>
+</body>
+</html>

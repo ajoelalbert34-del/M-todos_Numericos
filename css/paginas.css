@@ -1,0 +1,68 @@
+/* INDEX / PORTADA */
+.portada-hero { text-align: center; padding: 3.2rem 0 1.6rem; position: relative; }
+.portada-hero::before {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(circle at 50% 10%, rgba(255,183,123,.06), transparent 28rem);
+}
+.portada-titulo {
+  font-family: var(--font-title);
+  font-size: clamp(2.4rem, 5.2vw, 4.6rem);
+  color: var(--text-light);
+  margin-bottom: .55rem;
+  letter-spacing: -0.035em;
+  text-shadow: none;
+}
+.portada-subtitulo { font-size: 1.17rem; color: var(--text-muted); margin-bottom: 2rem; }
+.portada-botones { display:flex; gap:1.25rem; justify-content:center; flex-wrap:wrap; margin:1.7rem 0; }
+.portada-botones .btn { min-width: 180px; }
+.portada-autor { display:flex; gap:2.7rem; align-items:center; justify-content:center; flex-wrap:wrap; margin:2.4rem 0; }
+.portada-autor-info { max-width: 520px; }
+.portada-autor-info h2 { color: var(--primary); margin-bottom:.75rem; font-size: clamp(1.5rem, 3vw, 2.1rem); }
+.portada-autor-info p { color: var(--text-muted); line-height:1.75; margin-bottom:.65rem; }
+
+/* TEORIA */
+.teoria-section { margin-bottom: 1.5rem; }
+.teoria-section .card { height: 100%; }
+.teoria-comparativa { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin:1.5rem 0; }
+.teoria-error-section { margin:1.5rem 0; }
+.teoria-error-section h4 { color: var(--text-light); margin-bottom:.45rem; }
+.teoria-error-section .katex-display { margin:.65rem 0; }
+.teoria-cta { text-align:center; margin:2rem 0; }
+
+/* MENU METODO */
+.menu-metodo-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:2rem 0; }
+.metodo-card { text-align:center; padding:2.4rem 1.5rem; cursor:default; transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition); border-top:2px solid rgba(255,183,123,.55); }
+.metodo-card:hover { transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,.3); border-color:rgba(255,183,123,.85); }
+.metodo-card h2 { color: var(--accent); margin-bottom:.75rem; letter-spacing:.04em; }
+.metodo-card p { color: var(--text-muted); margin-bottom:.3rem; font-size:.95rem; }
+.metodo-card .btn { margin-top:1.5rem; }
+.menu-simulador-link { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; margin:1.5rem 0; }
+
+/* CALCULADORAS */
+.calculator-grid { display:grid; gap:1.5rem; }
+.calculator-grid .card { overflow:hidden; }
+.calculator-inputs { display:grid; gap:.75rem; }
+.calculator-botones { display:flex; gap:1rem; flex-wrap:wrap; margin-top:.5rem; }
+.desarrollo-section { margin-top:1rem; }
+.desarrollo-section .stage-section p { font-family:var(--font-mono); font-size:.92rem; color:var(--text-muted); }
+
+/* SIMULADOR */
+.simulador-controls { border-top: 2px solid rgba(255,183,123,.35); }
+.simulador-controls .input-row { grid-template-columns: 1fr 1fr 1fr; }
+.simulador-graph-area { margin:1.5rem 0; }
+.simulador-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin:1.5rem 0; }
+#sim-info:empty::before { content:"Configure la función y pulse Graficar."; color:var(--text-soft); font-style:italic; }
+#sim-bloques .note { color: var(--text-soft) !important; }
+.plotly-container { min-height: 440px; }
+
+@media (max-width: 768px) {
+  .portada-titulo { font-size:2.25rem; }
+  .portada-autor { flex-direction:column; text-align:center; }
+  .teoria-comparativa, .menu-metodo-grid { grid-template-columns:1fr; }
+  .simulador-controls .input-row { grid-template-columns:1fr; }
+  .simulador-info-grid { grid-template-columns:1fr; }
+  .table-container { font-size:.8rem; }
+  table th, table td { padding:.45rem .5rem; font-size:.78rem; }
+  .portada-botones { gap:.75rem; }
+  .portada-botones .btn { width:100%; }
+}
