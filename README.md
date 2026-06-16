@@ -305,9 +305,9 @@ http://localhost:5000
 
 Si el proyecto está desplegado en Firebase Hosting:
 
-```text
+
 https://simpson-38.web.app
-```
+
 
 ---
 
